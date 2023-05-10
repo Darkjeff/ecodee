@@ -42,37 +42,6 @@ class ActionsEcotaxdeee
 		$this->db = $db;
 	}
 
-
-	/**
-	 * Execute action
-	 *
-	 * @param	array	$parameters		Array of parameters
-	 * @param   Object	$pdfhandler  	PDF builder handler
-	 * @param   string	$action     	'add', 'update', 'view'
-	 * @return  int 		        	<0 if KO,
-	 *                          		=0 if OK but we want to process standard actions too,
-	 *  	                            >0 if OK and we want to replace standard actions.
-	 */
-	function beforePDFcreation($parameters, &$pdfhandler, &$action)
-	{
-		global $conf;
-		$total_eco_tax='';
-		if (!empty($parameters['object']) && !empty($parameters['object']->element) && $parameters['object']->element=='facture') {
-			if (! empty($conf->global->WEEE_PRODUCT_ID)) {
-				$product_id = $conf->global->WEEE_PRODUCT_ID;
-				foreach ($parameters['object']->lines as $line) {
-					if ($line->fk_product==$product_id) {
-						$total_eco_tax = (!empty($conf->multicurrency->enabled) && $parameters['object']->multicurrency_tx != 1 ? $line->multicurrency_total_ttc : $line->total_ttc);
-					}
-				}
-			}
-			if (!empty($total_eco_tax)) {
-				$conf->global->INVOICE_FREE_TEXT='<Dont éco-participation DEEE:'.price($total_eco_tax);
-			}
-		}
-
-	}
-
 	/**
 	 * Execute action
 	 *
